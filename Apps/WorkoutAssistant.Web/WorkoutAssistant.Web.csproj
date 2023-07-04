@@ -3,7 +3,20 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<ImplicitUsings>enable</ImplicitUsings>-->
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator" Version="3.3.2" />
+    <PackageReference Include="FluentMigrator.Extensions.SqlServer" Version="3.3.2" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
+    <PackageReference Include="FluentNHibernate" Version="3.2.1" />
+    <PackageReference Include="FluentValidation" Version="11.5.2" />
+    <PackageReference Include="NHibernate" Version="5.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructures\Contracts\" />
+  </ItemGroup>
 
 </Project>
