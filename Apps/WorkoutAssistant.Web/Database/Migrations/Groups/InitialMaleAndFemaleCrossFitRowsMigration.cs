@@ -1,7 +1,7 @@
 ﻿using FluentMigrator;
 using WorkoutAssistant.Web.Models.Entities;
 
-namespace WorkoutAssistant.Web.Data.Migrations.Groups;
+namespace WorkoutAssistant.Web.Database.Migrations.Groups;
 
 [Migration(version: 20230704162149)]
 public class InitialMaleAndFemaleCrossFitRowsMigration : GroupTableMigration

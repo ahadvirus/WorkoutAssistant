@@ -1,6 +1,6 @@
 ﻿using WorkoutAssistant.Web.Infrastructures.Database;
 
-namespace WorkoutAssistant.Web.Data.Migrations.Groups;
+namespace WorkoutAssistant.Web.Database.Migrations.Groups;
 
 public abstract class GroupTableMigration : TableMigration
 {
