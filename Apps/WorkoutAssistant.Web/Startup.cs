@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WorkoutAssistant.Web.Database.Connections;
+using WorkoutAssistant.Web.Database.Contexts;
 
 namespace WorkoutAssistant.Web;
 
@@ -14,6 +17,30 @@ public static class Startup
     /// <param name="configuration"></param>
     public static void ConfigurationService(IServiceCollection services, IConfiguration configuration)
     {
+        //Add all sql connection to service
+        services.AddTransient<GymSqlConnection>(implementationFactory: _ =>
+            configuration.GetSection(
+                key: string.Format(
+                    format: "{0}:{1}",
+                    args: new object?[]
+                    {
+                        string.Format(
+                            format: "{0}{1}",
+                            args: new object?[]
+                            {
+                                nameof(Database),
+                                nameof(Database.Connections)
+                            }
+                        ),
+                        nameof(GymSqlConnection)
+                    }
+                )
+            ).Get<GymSqlConnection>() ?? throw new Exception(message: "")
+        );
+
+        //Implement Sql context to store all data to database
+        services.AddDbContext<ApplicationContext>();
+
         services.AddControllersWithViews();
     }
 
