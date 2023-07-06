@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace WorkoutAssistant.Web.Infrastructures.Database;
+namespace WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 
 public abstract class TableMigration : Migration
 {

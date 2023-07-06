@@ -1,6 +1,6 @@
 ﻿using WorkoutAssistant.Web.Infrastructures.Database.EntitiesPrimaryIndex;
 
-namespace WorkoutAssistant.Web.Infrastructures.Database;
+namespace WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 
 public class TablePrimaryIndexes
 {
