@@ -4,7 +4,7 @@ using WorkoutAssistant.Web.Infrastructures.Database.Connections;
 
 namespace WorkoutAssistant.Web.Database.Connections;
 
-public class GymSqlConnection : MsSqlConnection, ISqlExpressionConnection<MsSqlConnectionStringBuilder>
+public class WorkoutSqlConnection : MsSqlConnection, ISqlExpressionConnection<MsSqlConnectionStringBuilder>
 {
     public void ConnectionExpression(MsSqlConnectionStringBuilder connectionExpression)
     {
