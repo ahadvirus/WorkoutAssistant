@@ -1,16 +1,17 @@
 ﻿using System;
+using WorkoutAssistant.Web.Infrastructures.Contracts;
 
 namespace WorkoutAssistant.Web.Models.Entities;
 
-public class Group
+public class Group : IEntity<Guid>
 {
     /// <summary>
     /// The primary key of table
     /// </summary>
-    public virtual Guid Id { get; set; }
+    public Guid Id { get; set; }
     
     /// <summary>
     /// Name of the group exercise
     /// </summary>
-    public virtual string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 }
