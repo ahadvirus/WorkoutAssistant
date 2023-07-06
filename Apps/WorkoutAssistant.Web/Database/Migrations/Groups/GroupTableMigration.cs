@@ -1,4 +1,4 @@
-﻿using WorkoutAssistant.Web.Infrastructures.Database;
+﻿using WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 
 namespace WorkoutAssistant.Web.Database.Migrations.Groups;
 
