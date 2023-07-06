@@ -34,7 +34,9 @@ public abstract class MsSqlConnection : ISqlConnection
                     DataSource = Server,
                     InitialCatalog = Database,
                     UserID = Username,
-                    Password = Password
+                    Password = Password,
+                    IntegratedSecurity = true,
+                    TrustServerCertificate = true
                 })
                 .ConnectionString;
         }
