@@ -20,6 +20,8 @@ public class ApplicationContext : DbContext
         #region InitialTables
 
         Groups = Set<Group>();
+        Roles = Set<Role>();
+        Users = Set<User>();
 
         #endregion
     }
@@ -36,6 +38,16 @@ public class ApplicationContext : DbContext
     /// Access to group table in database
     /// </summary>
     public DbSet<Group> Groups { get; set; }
+    
+    /// <summary>
+    /// Access to role table in database
+    /// </summary>
+    public DbSet<Role> Roles { get; set; }
+    
+    /// <summary>
+    /// Access to user table in database
+    /// </summary>
+    public DbSet<User> Users { get; set; }
 
     #endregion
 
@@ -44,6 +56,8 @@ public class ApplicationContext : DbContext
         #region Configurations
 
         modelBuilder.ApplyConfiguration(new GroupConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
         #endregion
         
