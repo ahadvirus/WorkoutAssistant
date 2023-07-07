@@ -3,7 +3,7 @@
 namespace WorkoutAssistant.Web.Database.Migrations.Users;
 
 [Migration(version: 20230706100911)]
-public class InitialUserTable : UserTableMigration
+public class InitialUserTableMigration : UserTableMigration
 {
     public override void Up()
     {
