@@ -25,4 +25,15 @@ public class TablePrimaryIndexes
             return new UserIndexes();
         }
     }
+    
+    /// <summary>
+    /// Represent all indexes for roles use in migration
+    /// </summary>
+    public RoleIndexes Role
+    {
+        get
+        {
+            return new RoleIndexes();
+        }
+    }
 }
