@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Reflection;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WorkoutAssistant.Web.Areas.Auth.Controllers;
 using WorkoutAssistant.Web.Database.Connections;
 using WorkoutAssistant.Web.Database.Contexts;
 using WorkoutAssistant.Web.Infrastructures.Contracts;
@@ -77,9 +79,47 @@ public static class Startup
 
         //Add new logger fo FluentMigration for showing which migration is up
         services.AddLogging(configure: builder => builder.AddFluentMigratorConsole());
-        
+
         //Add migrate service to run migration to database
         services.AddScoped<IMigratorService, MigrationService>();
+
+        //Implement Authentication to system
+        services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(configureOptions: options =>
+            {
+                options.LoginPath = string.Format(
+                    format: "/{0}/{1}",
+                    args: new object?[]
+                    {
+                        nameof(Models.Configurations.Names.Areas.Auth),
+                        nameof(LoginController).RemoveController()
+                    }
+                );
+                options.LogoutPath = string.Format(
+                    format: "/{0}/{1}",
+                    args: new object?[]
+                    {
+                        nameof(Models.Configurations.Names.Areas.Auth),
+                        nameof(LogoutController).RemoveController()
+                    }
+                );
+                options.AccessDeniedPath = string.Format(
+                    format: "/{0}/{1}/{2}",
+                    args: new object?[]
+                    {
+                        nameof(Models.Configurations.Names.Areas.Auth),
+                        nameof(AccessController).RemoveController(),
+                        nameof(AccessController.Denied)
+                    }
+                );
+            });
+
+        //Add Route configuration for asp.net system
+        services.AddRouting(configureOptions: options =>
+        {
+            options.LowercaseUrls = true;
+            options.LowercaseQueryStrings = true;
+        });
 
         services.AddControllersWithViews();
     }
