@@ -8,15 +8,15 @@ public class InitialUserTableMigration : UserTableMigration
     public override void Up()
     {
         Create
-            .Table(tableName: TableName)
-            .WithColumn(name: "Id").AsGuid().PrimaryKey().NotNullable()
-            .WithColumn(name: UsernameColumnName).AsString().NotNullable()
-            .WithColumn(name: "Password").AsString().NotNullable();
+            .Table(tableName: Configuration.TableName)
+            .WithColumn(name: Configuration.ColumnsName.Primary).AsGuid().PrimaryKey().NotNullable()
+            .WithColumn(name: Configuration.ColumnsName.Username).AsString().NotNullable()
+            .WithColumn(name: Configuration.ColumnsName.Password).AsString().NotNullable();
     }
 
     public override void Down()
     {
         Delete
-            .Table(tableName: TableName);
+            .Table(tableName: Configuration.TableName);
     }
 }

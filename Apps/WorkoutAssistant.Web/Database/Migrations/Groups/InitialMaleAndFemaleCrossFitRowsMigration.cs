@@ -13,7 +13,7 @@ public class InitialMaleAndFemaleCrossFitRowsMigration : GroupTableMigration
     {
         get
         {
-            return new Group() { Id = Indexes.Group.MaleCrossFitIndex, Name = "MaleCrossFit" };
+            return new Group() { Id = Configuration.Rows.MaleCrossFitIndex, Name = "MaleCrossFit" };
         }
     }
     
@@ -24,25 +24,25 @@ public class InitialMaleAndFemaleCrossFitRowsMigration : GroupTableMigration
     {
         get
         {
-            return new Group() { Id = Indexes.Group.FemaleCrossFitIndex, Name = "FemaleCrossFit" };
+            return new Group() { Id = Configuration.Rows.FemaleCrossFitIndex, Name = "FemaleCrossFit" };
         }
     }
     
     public override void Up()
     {
-        Insert.IntoTable(tableName: TableName)
+        Insert.IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: MaleCrossFitRow);
         
-        Insert.IntoTable(tableName: TableName)
+        Insert.IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: FemaleCrossFitRow);
     }
 
     public override void Down()
     {
-        Delete.FromTable(tableName: TableName)
+        Delete.FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: FemaleCrossFitRow);
         
-        Delete.FromTable(tableName: TableName)
+        Delete.FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: MaleCrossFitRow);
     }
 }

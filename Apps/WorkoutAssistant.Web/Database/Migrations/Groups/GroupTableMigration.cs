@@ -1,27 +1,9 @@
-﻿using WorkoutAssistant.Web.Infrastructures.Database.Migrations;
+﻿using WorkoutAssistant.Web.Infrastructures.Database.Configurations.Groups;
+using WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 
 namespace WorkoutAssistant.Web.Database.Migrations.Groups;
 
-public abstract class GroupTableMigration : TableMigration
+public abstract class GroupTableMigration : TableMigration<GroupTable, GroupTableColumns, GroupTableIndexes, GroupTableRows>
 {
-    protected override string TableName
-    {
-        get { return "Groups"; }
-    }
-
-    /// <summary>
-    /// Define column name of name column in table
-    /// </summary>
-    protected string NameColumnName
-    {
-        get { return "Name"; }
-    }
-
-    /// <summary>
-    /// Define column name of name column in table
-    /// </summary>
-    protected string NameIndexName
-    {
-        get { return string.Format(format: "IX_{0}_{1}", args: new object?[] { NameColumnName, TableName }); }
-    }
+    
 }

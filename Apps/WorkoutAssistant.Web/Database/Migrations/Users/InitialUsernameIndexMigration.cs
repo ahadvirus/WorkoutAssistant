@@ -8,17 +8,17 @@ public class InitialUsernameIndexMigration : UserTableMigration
     public override void Up()
     {
         Create
-            .Index(indexName: UsernameIndexName)
-            .OnTable(tableName: TableName)
-            .OnColumn(columnName: UsernameColumnName)
+            .Index(indexName: Configuration.IndexesName.UsernameUnique)
+            .OnTable(tableName: Configuration.TableName)
+            .OnColumn(columnName: Configuration.ColumnsName.Username)
             .Unique();
     }
 
     public override void Down()
     {
         Delete
-            .Index(indexName: UsernameIndexName)
-            .OnTable(tableName: TableName)
-            .OnColumn(columnName: UsernameColumnName);
+            .Index(indexName: Configuration.IndexesName.UsernameUnique)
+            .OnTable(tableName: Configuration.TableName)
+            .OnColumn(columnName: Configuration.ColumnsName.Username);
     }
 }

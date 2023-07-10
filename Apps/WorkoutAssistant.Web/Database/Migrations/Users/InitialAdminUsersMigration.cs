@@ -13,7 +13,7 @@ public class InitialAdminUsersMigration : UserTableMigration
     {
         get
         {
-            return new User() { Id = Indexes.User.MehdiId, Username = "mehdi", Password = "123@asd" };
+            return new User() { Id = Configuration.Rows.MehdiId, Username = "mehdi", Password = "123@asd" };
         }
     }
     
@@ -24,29 +24,29 @@ public class InitialAdminUsersMigration : UserTableMigration
     {
         get
         {
-            return new User() { Id = Indexes.User.AhadId, Username = "ahad", Password = "123@asd" };
+            return new User() { Id = Configuration.Rows.AhadId, Username = "ahad", Password = "123@asd" };
         }
     }
 
     public override void Up()
     {
         Insert
-            .IntoTable(tableName: TableName)
+            .IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: MehdiRow);
         
         Insert
-            .IntoTable(tableName: TableName)
+            .IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: AhadRow);
     }
 
     public override void Down()
     {
         Delete
-            .FromTable(tableName: TableName)
+            .FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: AhadRow);
         
         Delete
-            .FromTable(tableName: TableName)
+            .FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: MehdiRow);
     }
 }

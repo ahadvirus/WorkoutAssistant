@@ -7,13 +7,13 @@ public class InitialGroupTableMigration : GroupTableMigration
 {
     public override void Up()
     {
-        Create.Table(tableName: TableName)
-            .WithColumn(name: "Id").AsGuid().PrimaryKey().NotNullable()
-            .WithColumn(name: NameColumnName).AsString().NotNullable();
+        Create.Table(tableName: Configuration.TableName)
+            .WithColumn(name: Configuration.ColumnsName.Primary).AsGuid().PrimaryKey().NotNullable()
+            .WithColumn(name: Configuration.ColumnsName.Name).AsString().NotNullable();
     }
 
     public override void Down()
     {
-        Delete.Table(tableName: TableName);
+        Delete.Table(tableName: Configuration.TableName);
     }
 }

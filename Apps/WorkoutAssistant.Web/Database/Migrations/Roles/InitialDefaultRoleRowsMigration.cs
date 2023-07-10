@@ -13,7 +13,7 @@ public class InitialDefaultRoleRowsMigration : RoleTableMigration
     {
         get
         {
-            return new Role() { Id = Indexes.Role.AdminId, Name = "Admin" };
+            return new Role() { Id = Configuration.Rows.AdminId, Name = "Admin" };
         }
     }
     
@@ -24,7 +24,7 @@ public class InitialDefaultRoleRowsMigration : RoleTableMigration
     {
         get
         {
-            return new Role() { Id = Indexes.Role.CoachId, Name = "Coach" };
+            return new Role() { Id = Configuration.Rows.CoachId, Name = "Coach" };
         }
     }
     
@@ -35,22 +35,22 @@ public class InitialDefaultRoleRowsMigration : RoleTableMigration
     {
         get
         {
-            return new Role() { Id = Indexes.Role.TrainerId, Name = "Trainer" };
+            return new Role() { Id = Configuration.Rows.TrainerId, Name = "Trainer" };
         }
     }
     
     public override void Up()
     {
         Insert
-            .IntoTable(tableName: TableName)
+            .IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: AdminRow);
         
         Insert
-            .IntoTable(tableName: TableName)
+            .IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: CoachRow);
         
         Insert
-            .IntoTable(tableName: TableName)
+            .IntoTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: TrainerRow);
         
     }
@@ -58,15 +58,15 @@ public class InitialDefaultRoleRowsMigration : RoleTableMigration
     public override void Down()
     {
         Delete
-            .FromTable(tableName: TableName)
+            .FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: TrainerRow);
         
         Delete
-            .FromTable(tableName: TableName)
+            .FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: CoachRow);
         
         Delete
-            .FromTable(tableName: TableName)
+            .FromTable(tableName: Configuration.TableName)
             .Row(dataAsAnonymousType: AdminRow);
     }
 }
