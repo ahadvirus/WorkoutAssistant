@@ -1,22 +1,21 @@
 ﻿using FluentMigrator;
+using WorkoutAssistant.Web.Infrastructures.Database.Contracts.Migrations;
 
 namespace WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 
-public abstract class TableMigration : Migration
-{
-    /// <summary>
-    /// Represent the name of table in database
-    /// </summary>
-    protected abstract string TableName { get; }
+public abstract class TableMigration<TTable, TColumns, TIndexes, TRows> : Migration, 
+    ITableConfiguration<TTable, TColumns, TIndexes, TRows> 
+    where TTable : class, ITable<TColumns, TIndexes, TRows>, new()
+    where TColumns : ITableColumnsDefinition
+    where TIndexes : TableIndexes<TColumns>
 
-    /// <summary>
-    /// Represent all indexes can be use in migrations for all tables
-    /// </summary>
-    protected TablePrimaryIndexes Indexes
+
+{
+    public TTable Configuration
     {
         get
         {
-            return new TablePrimaryIndexes();
+            return new TTable();
         }
     }
 }
