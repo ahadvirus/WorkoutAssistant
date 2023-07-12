@@ -22,6 +22,7 @@ public class ApplicationContext : DbContext
         Groups = Set<Group>();
         Roles = Set<Role>();
         Users = Set<User>();
+        RoleUsers = Set<RoleUser>();
 
         #endregion
     }
@@ -49,6 +50,11 @@ public class ApplicationContext : DbContext
     /// </summary>
     public DbSet<User> Users { get; set; }
 
+    /// <summary>
+    /// Access to roleuser table in database
+    /// </summary>
+    public DbSet<RoleUser> RoleUsers { get; set; }
+
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,6 +64,7 @@ public class ApplicationContext : DbContext
         modelBuilder.ApplyConfiguration(new GroupConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleUserConfiguration());
 
         #endregion
         
