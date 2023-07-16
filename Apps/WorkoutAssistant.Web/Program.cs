@@ -8,7 +8,7 @@ namespace WorkoutAssistant.Web
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             
-            Startup.ConfigurationService(services: builder.Services, configuration: builder.Configuration);
+            Startup.ConfigurationService(services: builder.Services, configuration: builder.Configuration, environment: builder.Environment);
             
             WebApplication app = builder.Build();
             

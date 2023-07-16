@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Reflection;
 using FluentMigrator.Runner;
+using Fluid.MvcViewEngine;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 using WorkoutAssistant.Web.Areas.Auth.Controllers;
 using WorkoutAssistant.Web.Database.Connections;
 using WorkoutAssistant.Web.Database.Contexts;
 using WorkoutAssistant.Web.Infrastructures.Contracts;
 using WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 using WorkoutAssistant.Web.Infrastructures.Extensions;
+using WorkoutAssistant.Web.Infrastructures.Localizer;
+using WorkoutAssistant.Web.Infrastructures.Localizer.Models;
 
 namespace WorkoutAssistant.Web;
 
@@ -22,7 +28,9 @@ public static class Startup
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/></param>
     /// <param name="configuration"><see cref="IConfiguration"/></param>
-    public static void ConfigurationService(IServiceCollection services, IConfiguration configuration)
+    /// <param name="environment"><see cref="IWebHostEnvironment"/></param>
+    public static void ConfigurationService(IServiceCollection services, IConfiguration configuration,
+        IWebHostEnvironment environment)
     {
         //Add all sql connection to service
 
@@ -121,7 +129,47 @@ public static class Startup
             options.LowercaseQueryStrings = true;
         });
 
-        services.AddControllersWithViews();
+        //Implement localization to services
+        services.TryAdd(
+            descriptor: new ServiceDescriptor(
+                serviceType: typeof(IStringLocalizerFactory),
+                implementationType: typeof(JsonLocalizerFactory),
+                lifetime: ServiceLifetime.Singleton
+            )
+        );
+
+        /*
+        services.TryAdd(
+            descriptor: new ServiceDescriptor(
+                serviceType: typeof(IStringLocalizer),
+                implementationType: typeof(JsonLocalizer),
+                lifetime: ServiceLifetime.Singleton
+            )
+        );
+        */
+
+        // The address for searching localization json files
+        services.AddSingleton<JsonLocalizationOption>(
+            implementationInstance: new JsonLocalizationOption(
+            
+                path: System.IO.Path.Combine(paths: new string[]
+                {
+                    environment.WebRootPath,
+                    nameof(LocalizationOptions.ResourcesPath)
+                        .Replace(oldValue: nameof(System.IO.Path), newValue: string.Empty)
+                })
+            )
+        );
+
+        // Custom collection for localization service
+        services.AddSingleton<ResourceCollection>();
+
+        services.AddControllersWithViews()
+            .AddFluid(setupAction: options =>
+            {
+                //options.Parser.
+            })
+            .AddViewLocalization(setupAction: options => { options.ResourcesPath = string.Empty; });
     }
 
     /// <summary>
