@@ -3,7 +3,7 @@
 /// <summary>
 /// Define all static names shared between views
 /// </summary>
-public class View
+public record View
 {
     /// <summary>
     /// Represent all title in views
