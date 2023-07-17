@@ -2,5 +2,9 @@
   "Title": {
     "Text": "Welcome to home",
     "Description": "message use in home controller"
+  },
+  "Message": {
+    "Text": "This message is notification",
+    "Description": "push notification system"
   }
 }
