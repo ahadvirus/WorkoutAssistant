@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Extensions.Localization;
 using WorkoutAssistant.Web.Infrastructures.Localizer.Models;
 
@@ -7,7 +8,7 @@ namespace WorkoutAssistant.Web.Infrastructures.Localizer;
 public class JsonLocalizer : IStringLocalizer
 {
     private string Address { get; }
-    
+
     private LanguageCollection Collection { get; }
 
     public JsonLocalizer(string address, LanguageCollection collection)
@@ -60,11 +61,55 @@ public class JsonLocalizer : IStringLocalizer
 
     public LocalizedString this[string name]
     {
-        get { throw new System.NotImplementedException(); }
+        get
+        {
+            string value = GetValue(key: name);
+
+            return new LocalizedString(
+                name: name,
+                value: string.IsNullOrEmpty(value) ? name : value,
+                resourceNotFound: string.IsNullOrEmpty(value)
+            );
+        }
     }
 
     public LocalizedString this[string name, params object[] arguments]
     {
-        get { throw new System.NotImplementedException(); }
+        get
+        {
+            LocalizedString value = this[name: name];
+
+            return value.ResourceNotFound
+                ? value
+                : new LocalizedString(
+                    name: value.Name,
+                    value: string.Format(format: value.Value, args: arguments),
+                    resourceNotFound: value.ResourceNotFound
+                );
+        }
+    }
+
+    private string GetValue(string key)
+    {
+        string result = string.Empty;
+
+        TranslateCollection? translates = Collection[language: GetCurrentCulture()];
+
+        if (translates != null)
+        {
+            Translate? translate = translates[key: key];
+
+            if (translate != null)
+            {
+                result = translate.Text;
+            }
+        }
+
+        return result;
+    }
+
+    private string GetCurrentCulture()
+    {
+        return Thread.CurrentThread.CurrentCulture.Name;
     }
 }

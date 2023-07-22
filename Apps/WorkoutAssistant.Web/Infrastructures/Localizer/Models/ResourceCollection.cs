@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WorkoutAssistant.Web.Infrastructures.Localizer.Models;
 
@@ -72,9 +74,10 @@ public class ResourceCollection : IEnumerable<KeyValuePair<string, LanguageColle
 
             if (languages != null)
             {
-                TranslateCollection? translates = languages.Contains(language: fileInfo.Name)
-                    ? languages[language: fileInfo.Name]
-                    : languages.Add(language: fileInfo.Name);
+                string language = fileInfo.Name.Replace(oldValue: fileInfo.Extension, newValue: string.Empty);
+                TranslateCollection? translates = languages.Contains(language: language)
+                    ? languages[language: language]
+                    : languages.Add(language: language);
                 if (translates != null)
                 {
                     using (FileStream fileStream = new FileStream(path: file, access: FileAccess.Read,
@@ -99,13 +102,24 @@ public class ResourceCollection : IEnumerable<KeyValuePair<string, LanguageColle
                                         : string.Format(format: "undefined-{0}", args: new object?[] { count });
 
                                     jsonReader.Read();
-
-                                    Translate? value = JsonSerializer.Create().Deserialize<Translate>(jsonReader);
-
-                                    if (value != null)
+                                    
+                                    /*
+                                    do
                                     {
-                                        translates.AddOrUpdate(key: key, value: value);
-                                    }
+                                        jsonReader.Read();
+                                        Debug.WriteLine(message: string.Format(format: " === {0} ====== {1} ===", args: new object?[] {jsonReader.Value, jsonReader.TokenType}));
+                                    } while (jsonReader.TokenType != JsonToken.EndObject);
+                                    */
+
+                                    JObject jsonObject = JObject.Load(reader: jsonReader);
+
+                                    Translate value = new Translate(key: key)
+                                    {
+                                        Text = (string)jsonObject[propertyName: nameof(Translate.Text)]!,
+                                        Description = (string?)jsonObject[propertyName: nameof(Translate.Description)]
+                                    };
+
+                                    translates.AddOrUpdate(key: key, value: value);
                                 }
                             }
                         }
@@ -126,7 +140,7 @@ public class ResourceCollection : IEnumerable<KeyValuePair<string, LanguageColle
 
         if (!Contains(resource: resource))
         {
-            result = new LanguageCollection();
+            result = new LanguageCollection(resource: resource, address: Options.Path);
             Collection.Add(key: resource, value: result);
         }
 

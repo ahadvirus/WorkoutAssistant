@@ -1,14 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace WorkoutAssistant.Web.Infrastructures.Localizer.Models;
 
 public class LanguageCollection : IEnumerable<KeyValuePair<string, TranslateCollection>>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private IDictionary<string, TranslateCollection> Collection { get; }
 
-    public LanguageCollection()
+    /// <summary>
+    /// 
+    /// </summary>
+    private string Resource { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private string Address { get; }
+
+    public LanguageCollection(string resource, string address)
     {
+        Resource = resource;
+        Address = address;
         Collection = new Dictionary<string, TranslateCollection>();
     }
 
@@ -18,7 +35,11 @@ public class LanguageCollection : IEnumerable<KeyValuePair<string, TranslateColl
 
         if (!Contains(language: language))
         {
-            result = new TranslateCollection();
+            result = new TranslateCollection(
+                language: language,
+                address: Path.Combine(paths: new string[]
+                    { Address, Resource.Replace(oldChar: Type.Delimiter, newChar: Path.DirectorySeparatorChar) })
+            );
             Collection.Add(key: language, value: result);
         }
 
@@ -27,10 +48,7 @@ public class LanguageCollection : IEnumerable<KeyValuePair<string, TranslateColl
 
     public TranslateCollection? this[string language]
     {
-        get
-        {
-            return Contains(language: language) ? Collection[key: language] : null;
-        }
+        get { return Contains(language: language) ? Collection[key: language] : null; }
     }
 
     public bool Contains(string language)
