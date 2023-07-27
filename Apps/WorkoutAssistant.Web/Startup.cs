@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using FluentMigrator.Runner;
 using Fluid.MvcViewEngine;
@@ -18,6 +19,7 @@ using WorkoutAssistant.Web.Database.Contexts;
 using WorkoutAssistant.Web.Infrastructures.Contracts;
 using WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 using WorkoutAssistant.Web.Infrastructures.Extensions;
+using WorkoutAssistant.Web.Infrastructures.Translators.Globalization;
 using WorkoutAssistant.Web.Infrastructures.Translators.Localizations;
 using WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
 using WorkoutAssistant.Web.Infrastructures.Web.Routes;
@@ -158,13 +160,29 @@ public static class Startup
                 {
                     environment.WebRootPath,
                     nameof(LocalizationOptions.ResourcesPath)
-                        .Replace(oldValue: nameof(Path), newValue: string.Empty)
+                        .Replace(oldValue: nameof(Path), newValue: string.Empty),
+                    nameof(Infrastructures.Translators.Localizations)
                 })
             )
         );
 
         // Custom collection for localization service
         services.AddSingleton<ResourceCollection>();
+        
+        // The address for searching localization json files
+        services.AddSingleton(
+            implementationInstance: new LanguageOption(
+                address: Path.Combine(paths: new[]
+                {
+                    environment.WebRootPath,
+                    nameof(LocalizationOptions.ResourcesPath)
+                        .Replace(oldValue: nameof(Path), newValue: string.Empty),
+                    nameof(Infrastructures.Translators.Globalization)
+                })
+            )
+        );
+        
+        services.AddSingleton<Infrastructures.Translators.Globalization.LanguageCollection>();
 
         services.AddControllersWithViews(configure: options =>
                 options.Conventions.Insert(index: 0, item: new ReplaceNameAndTemplateToPathConvention()))
@@ -207,6 +225,21 @@ public static class Startup
             );
         });
 
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            Infrastructures.Translators.Globalization.LanguageCollection? collection = scope.ServiceProvider
+                .GetService<Infrastructures.Translators.Globalization.LanguageCollection>();
+            if (collection != null && collection.Any())
+            {
+                app.UseRequestLocalization(optionsAction: options =>
+                {
+                    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(collection.Select(selector: language => language.Code).First());
+                    options.SupportedCultures = collection.Select(selector: language => language.CultureInfo).ToArray();
+                    options.SupportedUICultures = collection.Select(selector: language => language.CultureInfo).ToArray();
+                });
+            }
+        }
+        
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 

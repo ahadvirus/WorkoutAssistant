@@ -90,9 +90,9 @@
     <Folder Include="Applications\" />
     <Folder Include="Areas\Admin\Controllers\Localization\" />
     <Folder Include="Infrastructures\Configurations\" />
-    <Folder Include="Infrastructures\Translators\Globalizations\" />
     <Folder Include="wwwroot\libraries\dashmix\5.6\" />
     <Folder Include="wwwroot\libraries\metronic\8.1\" />
+    <Folder Include="wwwroot\Resources\Localizations\" />
   </ItemGroup>
 
 </Project>
