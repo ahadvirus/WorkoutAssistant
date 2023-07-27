@@ -1,12 +1,20 @@
-﻿namespace WorkoutAssistant.Web.Models.Configurations.Names.RouteNames;
+﻿using WorkoutAssistant.Web.Infrastructures.Web.Routes;
+
+namespace WorkoutAssistant.Web.Models.Configurations.Names.RouteNames;
 
 public record Language
 {
-    public string Change
+    public Route ChangeLanguage
     {
         get
         {
-            return string.Format(format: "{0}{1}", args: new object?[] { nameof(Change), nameof(Language) });
+            return new Route()
+            {
+                Path = "/language/change/{language}",
+                Controller = nameof(Controllers.HomeController),
+                Action = nameof(Controllers.HomeController.Index),
+                Name = nameof(ChangeLanguage),
+            };
         }
     }
 }
