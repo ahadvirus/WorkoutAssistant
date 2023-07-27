@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WorkoutAssistant.Web.Infrastructures.Localizer.Models;
+namespace WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
 
 public class Translate : INotifyPropertyChanged
 {

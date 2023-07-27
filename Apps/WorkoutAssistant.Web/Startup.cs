@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Reflection;
+using System.IO;
+using System.Net;
 using FluentMigrator.Runner;
 using Fluid.MvcViewEngine;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -16,8 +18,11 @@ using WorkoutAssistant.Web.Database.Contexts;
 using WorkoutAssistant.Web.Infrastructures.Contracts;
 using WorkoutAssistant.Web.Infrastructures.Database.Migrations;
 using WorkoutAssistant.Web.Infrastructures.Extensions;
-using WorkoutAssistant.Web.Infrastructures.Localizer;
-using WorkoutAssistant.Web.Infrastructures.Localizer.Models;
+using WorkoutAssistant.Web.Infrastructures.Translators.Localizations;
+using WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
+using WorkoutAssistant.Web.Infrastructures.Web.Routes;
+using WorkoutAssistant.Web.Infrastructures.Web.Routes.Conventions;
+using WorkoutAssistant.Web.Models.Configurations;
 
 namespace WorkoutAssistant.Web;
 
@@ -80,7 +85,7 @@ public static class Startup
         //Add FluentMigration to accumulate all migration from application
         services.AddFluentMigratorCore()
             .ConfigureRunner(configure: builder => builder.AddSqlServer()
-                .ScanIn(assemblies: new Assembly[] { typeof(Startup).Assembly }).For.All()
+                .ScanIn(assemblies: new[] { typeof(Startup).Assembly }).For.All()
                 .WithGlobalConnectionString(configureConnectionString: provider =>
                     provider.GetService<WorkoutSqlConnection>()!.ConnectionString)
             );
@@ -95,14 +100,7 @@ public static class Startup
         services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(configureOptions: options =>
             {
-                options.LoginPath = string.Format(
-                    format: "/{0}/{1}",
-                    args: new object?[]
-                    {
-                        nameof(Models.Configurations.Names.Areas.Auth),
-                        nameof(LoginController).RemoveController()
-                    }
-                );
+                options.LoginPath = nameof(Named.Routes.Auth.Login).GetRoutePathByName();
                 options.LogoutPath = string.Format(
                     format: "/{0}/{1}",
                     args: new object?[]
@@ -129,6 +127,11 @@ public static class Startup
             options.LowercaseQueryStrings = true;
         });
 
+        //Grab all route from assembly
+        services.AddSingleton(
+            implementationInstance: RouteCollection.GetInstance(typeof(Startup).Assembly)
+            );
+
         //Implement localization to services
         services.TryAdd(
             descriptor: new ServiceDescriptor(
@@ -149,14 +152,13 @@ public static class Startup
         */
 
         // The address for searching localization json files
-        services.AddSingleton<JsonLocalizationOption>(
+        services.AddSingleton(
             implementationInstance: new JsonLocalizationOption(
-            
-                path: System.IO.Path.Combine(paths: new string[]
+                path: Path.Combine(paths: new[]
                 {
                     environment.WebRootPath,
                     nameof(LocalizationOptions.ResourcesPath)
-                        .Replace(oldValue: nameof(System.IO.Path), newValue: string.Empty)
+                        .Replace(oldValue: nameof(Path), newValue: string.Empty)
                 })
             )
         );
@@ -164,11 +166,9 @@ public static class Startup
         // Custom collection for localization service
         services.AddSingleton<ResourceCollection>();
 
-        services.AddControllersWithViews()
-            .AddFluid(setupAction: options =>
-            {
-                //options.Parser.
-            })
+        services.AddControllersWithViews(configure: options =>
+                options.Conventions.Insert(index: 0, item: new ReplaceNameAndTemplateToPathConvention()))
+            .AddFluid()
             .AddViewLocalization(setupAction: options => { options.ResourcesPath = string.Empty; });
     }
 
@@ -179,7 +179,7 @@ public static class Startup
     public static void Configuration(WebApplication app)
     {
         // Apply all migration to database
-        app.UseMigrationUp();
+        //app.UseMigrationUp();
 
         if (!app.Environment.IsDevelopment())
         {
@@ -188,6 +188,25 @@ public static class Startup
             app.UseHsts();
         }
 
+        app.Use(middleware: async (context, next) =>
+        {
+            await next(context: context);
+
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+            
+            await context.Response.WriteAsync(text: string.Format(
+                    format:
+                    "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{0}</title></head><body><h1>{1}</h1></body></html>",
+                    args: new object?[]
+                    {
+                        nameof(HttpStatusCode.NotFound), 
+                        context.GetFullRoutePath()
+                    }
+                )
+            );
+        });
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
@@ -195,8 +214,14 @@ public static class Startup
 
         app.UseAuthorization();
 
+        app.MapControllers();
+
+        /*
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+        */
+
+        //app.map
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace WorkoutAssistant.Web.Infrastructures.Localizer.Models;
+namespace WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
 
 public class LanguageCollection : IEnumerable<KeyValuePair<string, TranslateCollection>>
 {

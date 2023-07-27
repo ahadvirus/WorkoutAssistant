@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Localization;
-using WorkoutAssistant.Web.Infrastructures.Localizer.Models;
+using WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
 
-namespace WorkoutAssistant.Web.Infrastructures.Localizer;
+namespace WorkoutAssistant.Web.Infrastructures.Translators.Localizations;
 
 public class JsonLocalizerFactory : IStringLocalizerFactory
 {

@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace WorkoutAssistant.Web.Infrastructures.Localizer.Models;
+namespace WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
 
 public class TranslateCollection : IEnumerable<KeyValuePair<string, Translate>>
 {

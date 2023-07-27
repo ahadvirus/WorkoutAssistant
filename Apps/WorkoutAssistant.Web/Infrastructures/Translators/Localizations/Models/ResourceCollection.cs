@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace WorkoutAssistant.Web.Infrastructures.Localizer.Models;
+namespace WorkoutAssistant.Web.Infrastructures.Translators.Localizations.Models;
 
 public class ResourceCollection : IEnumerable<KeyValuePair<string, LanguageCollection>>
 {
